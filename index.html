@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flixplay - Home</title>
+  <link rel="shortcut icon" href="./imgs/logo.ico" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="styles/style.css">
+
+  <!-- Manifiesto -->
+  <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+  <div id='app'>
+
+    <header>
+      <nav>
+        <a id="logo-pc" href="./"><img src="./imgs/Flixplay.svg" alt="Flixplay logo"></a>
+        <div id='container-nav-list-buscar'>
+          <div id='container-nav-list'>
+            <button @click="isMenu = true" v-if="!isMenu" id='btn-abrir-menu'><img src="./imgs/menu.svg" alt="abrir menu"></button>
+            <button @click="isMenu = false" id='btn-cerrar-menu'><img src="./imgs/cruz.svg" alt="cerrar menu" v-if="isMenu"></button>
+            <a id='logo-mobile' v-if="isMenu" href="./"><img src="./imgs/Flixplay.svg" alt="Flixplay logo"></a>
+            <ul id='nav-list'>
+              <li class="active"><a href="./">Inicio</a></li>
+              <li><a href="#peliculas">Películas</a></li>
+              <li><a href="./favoritos.html">Favoritos</a></li>
+              <li><a href="./faqs.html">FAQ's</a></li>
+            </ul>
+            <ul id='nav-list-mobile' v-if="isMenu">
+              <li class="active"><a href="./">Inicio</a></li>
+              <li><a href="#peliculas">Películas</a></li>
+              <li><a href="./favoritos.html">Favoritos</a></li>
+              <li><a href="./faqs.html">FAQ's</a></li>
+            </ul>
+          </div>
+          <div id='container-buscar'>
+            <img src="./imgs/lupa.svg" alt="buscar">
+            <input v-model='buscadorValue' @input="buscar" id='input-buscar' autocomplete='off' placeholder='Buscar...' type="text">
+
+            <ul v-if='isBusqueda' id='listaBusqueda'>
+              <li v-for='(item, index) in peliculasLista' :key='index'>
+                <button @click='seleccionarPelicula(item.id)' type='button' v-text='item.title'></button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+  <div v-if='!isFav'>
+    <main v-if='!isBusqueda' id='container-banners'>
+      <div id='container-imgs-banners'>
+        <img v-if='!isPeliculaSeleccionada' src="./imgs/banner-2.jpg" alt="banner pelicula">
+        <img v-else :src="getPosterUrl(peliculaSeleccionada.poster_path)" alt="banner pelicula">
+      </div>
+      <div v-if='!isPeliculaSeleccionada' id='container-info-banners'>
+        <h1>BIG HERO 6</h1>
+        <ul>
+          <li>Aventura</li>
+          <li>Acción</li>
+        </ul>
+        <ul>
+          <li><img src="./imgs/reloj.svg" alt="reloj icono">102 min</li>
+          <li><img src="./imgs/estrella.svg" alt="estrella icono">91/100</li>
+          <li><img src="./imgs/fecha.svg" alt="fecha icono">2015</li>
+        </ul>
+        <p>Hiro Hamada, un joven aficionado a la robótica que se une a un equipo de superhéroes para enfrentar a un villano enmascarado y proteger la ciudad de San Fransokyo. Con la ayuda de su amigo Baymax, un robot amigable, Hiro y su equipo luchan contra el crimen</p>
+        <div id='container-btn'>
+          <button id="verAhora"><img src="./imgs/play.svg" alt="play icono"> Ver ahora</button>
+          <div id="mensaje"><p>Próximamente...</p></div>
+          <!-- <button>Trailer</button> -->
+          <button><img src="./imgs/corazon.svg" alt="estrella icono"></button>
+        </div>
+      </div>
+
+      <div v-else id='container-info-banners'>
+        <h1 v-text='peliculaSeleccionada.title'></h1>
+        <ul>
+          <li v-for='(item, index) in peliculaSeleccionada.genres' :key='index' v-text='item.name'></li>
+        </ul>
+        <ul>
+          <li v-if="peliculaSeleccionada.runtime !== undefined"><img src="./imgs/reloj.svg" alt="reloj icono">{{peliculaSeleccionada.runtime + ' min'}}</li>
+          <li v-if="peliculaSeleccionada.vote_average !== undefined"><img src="./imgs/estrella.svg" alt="estrella icono">{{puntuacionPelicula(peliculaSeleccionada.vote_average)}}/100</li>
+          <li v-if="peliculaSeleccionada.release_date !== undefined"><img src="./imgs/fecha.svg" alt="fecha icono">{{fechaPelicula(peliculaSeleccionada.release_date)}}</li>
+        </ul>
+        <p v-text='peliculaSeleccionada.overview'></p>
+        <div id='container-btn'>
+          <button id="verAhora"><img src="./imgs/play.svg" alt="play icono"> Ver ahora</button>
+          <div id="mensaje"><p>Próximamente...</p></div>
+          <!-- <button>Trailer</button> -->
+          <button @click='agregarFav({id:peliculaSeleccionada.id, titulo: peliculaSeleccionada.title, poster: peliculaSeleccionada.poster_path})'><img src="./imgs/corazon.svg" alt="corazon icono"></button>
+        </div>
+      </div>
+    </main>
+
+     
+    
+    <section v-if="!isBusqueda" class="secciones-home" id="peliculas">
+      <Peliculas titulo="En tendencias" :get-poster-url="getPosterUrl" :seleccionar-pelicula="seleccionarPelicula":peliculas-recomendadas="peliculasRecomendadas" :peliculas-top="[]" :peliculas-populares="[]"></Peliculas>
+    </section>
+
+    <section v-if="!isBusqueda" class="secciones-home">
+      <Peliculas titulo="Podría gustarte" :peliculas-recomendadas="[]" :peliculas-populares="[]" :get-poster-url="getPosterUrl" :seleccionar-pelicula="seleccionarPelicula" :peliculas-top="peliculasTop"></Peliculas>
+    </section>
+
+
+    <section v-if='!isBusqueda' class="secciones-home">
+      <Peliculas titulo="Populares" :peliculas-recomendadas="[]" :peliculas-populares="peliculasPopulares" :get-poster-url="getPosterUrl" :seleccionar-pelicula="seleccionarPelicula" :peliculas-top="[]"></Peliculas>
+      <!-- <div>
+        <h2>Populares</h2>      
+      </div>
+      <div>
+        <div @click='seleccionarPelicula(item.id)' class='card-pelicula' v-for='(item, index) in peliculasPopulares' :key='index'>
+          <img :src="getPosterUrl(item.poster_path)" :alt="'poster de ' + item.title">
+          <span v-text="item.title"></span>
+        </div>
+      </div> -->
+    </section>
+
+      <div> 
+        <section id="containerListaBusqueda" v-if='isBusqueda'>
+          <ul id="filtros-list" v-if="isBusqueda">
+            <li>
+              <button @click="filtrarPor = false ">Todas</button>
+            </li>
+            <li>
+              <button @click="filtrarPor = 'en' ">En inglés</button>
+            </li>
+            <li>
+              <button @click="filtrarPor = 'es' ">En español</button>
+            </li>
+          </ul>
+          <div class='pelicula-resultados' v-for='(item, index) in peliculasFiltradas' :key='index' @click='seleccionarPelicula(item.id)'>
+            <img :src="getPosterUrl(item.poster_path)" :alt="'poster de ' + item.title">
+            <span v-text='item.title'></span>
+          </div>
+        </section>
+      </div>
+    </div>
+    <footer v-if='!isBusqueda'>
+      <div class="logo">
+        <img src="./imgs/Flixplay.svg" alt="Logo de mi página">
+      </div>
+      <p class="texto-footer">&copy; 2023 Todos los derechos reservados <br>
+        🎬 Hecho por Nicolás Agüero.</p>
+    </footer>
+  </div>
+
+
+
+</div>
+
+
+</body>
+</html>

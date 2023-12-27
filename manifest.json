@@ -1,0 +1,23 @@
+{
+  "author": "Nicolás Agüero / Belén Stella / Lucas García",
+  "description": "Parcial 2 Vue - Escuela Da Vinci",
+  "name": "Filxplay",
+  "dir": "ltr",
+  "orientation": "any",
+  "scope": "/",
+  "start_url": "index.html",
+  "theme_color": "#FC295C",
+  "display": "standalone",
+  "icons": [
+    {
+      "sizes": "16x16",
+      "type": "image/png",
+      "src": "./imgs/logo-16.png"
+    },
+    {
+      "sizes": "144x144",
+      "type": "image/png",
+      "src": "./imgs/logo-144.png"
+    }
+  ]
+}

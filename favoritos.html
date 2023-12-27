@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flixplay - Favoritos</title>
+    <link rel="shortcut icon" href="./imgs/logo.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="app.js" defer></script>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <div id='app'>
+
+    <header>
+        <nav>
+          <a id="logo-pc" href="./"><img src="./imgs/Flixplay.svg" alt="Flixplay logo"></a>
+          <div id='container-nav-list-buscar'>
+            <div id='container-nav-list'>
+              <button @click="isMenu = true" v-if="!isMenu" id='btn-abrir-menu'><img src="./imgs/menu.svg" alt="abrir menu"></button>
+              <button @click="isMenu = false" id='btn-cerrar-menu'><img src="./imgs/cruz.svg" alt="cerrar menu" v-if="isMenu"></button>
+              <a id='logo-mobile' v-if="isMenu" href="./"><img src="./imgs/Flixplay.svg" alt="Flixplay logo"></a>
+              <ul id='nav-list'>
+                <li><a href="./">Inicio</a></li>
+                <li><a href="./#peliculas">Películas</a></li>
+                <li class="active"><a @click='verFav()'>Favoritos</a></li>
+                <li><a href="./faqs.html">FAQ's</a></li>
+              </ul>
+              <ul id='nav-list-mobile' v-if="isMenu">
+                <li><a href="./">Inicio</a></li>
+                <li><a href="./#peliculas">Películas</a></li>
+                <li class="active"><a href="./favoritos.html">Favoritos</a></li>
+                <li><a href="./faqs.html">FAQ's</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+    <section class="seccion-fav">    
+      <Favoritos :peliculas-fav="peliculasFav" :get-poster-url="getPosterUrl" :seleccionar-pelicula="seleccionarPelicula" :cant-fav="cantFav"></Favoritos>
+    </section>
+      
+</div>
+  
+<footer>
+  <div class="logo">
+    <img src="./imgs/Flixplay.svg" alt="Logo de mi página">
+  </div>
+  <p class="texto-footer">&copy; 2023 Todos los derechos reservados <br>
+    🎬 Hecho por Nicolás Agüero.</p>
+</footer>
+
+</body>
+</html>
