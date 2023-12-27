@@ -115,10 +115,10 @@ const App = new Vue({
 
   mounted() {
     // this.isFav && this.verFav();
-    if(window.location.pathname == "/favoritos.html") {
+    if(window.location.pathname == "/favoritos.html" || window.location.pathname == "/Flixplay-project/favoritos.html") {
       this.verFav();
     }
-    if(window.location.pathname == "/") {
+    if(window.location.pathname == "/" || window.location.pathname == "/Flixplay-project/") {
       localStorage.getItem("idFav") && 
       (
         this.seleccionarPelicula(localStorage.getItem("idFav")),
